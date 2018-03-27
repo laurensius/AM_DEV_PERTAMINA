@@ -17,7 +17,7 @@ class Api extends CI_Controller {
 	}
 
 	//----------------------------------------------------------AUTENTIFIKASI---------------------------------------------------------
-	public function login(){
+	private function login(){
 		if($this->input->post('username') == null && $this->input->post('password') == null){
 			$data = file_get_contents('php://input');
 			$json = json_decode($data);
@@ -136,6 +136,45 @@ class Api extends CI_Controller {
 		);
 		echo json_encode($response,JSON_PRETTY_PRINT);
 	}
+	
+	public function product_add(){
+	    if($this->input->post('product_name') == null &&
+	        $this->input->post('product_description') == null){
+	        
+	        $data = file_get_contents('php://input');
+            $json = json_decode($data);
+            $data_insert = array(
+                "product_name" => $json->product_name,
+                "product_description" => $json->product_description,
+                "publish_datetime" => date("Y-m-d H:i:s"),
+                "is_discontinue" => "0",
+                "discontinue_datetime" => "0000-00-00 00:00:00"
+            );
+	    }else{
+	        $data_insert = array(
+	            "product_name" => $this->input->post('product_name'),
+	            "product_description" => $this->input->post('product_description'),
+	            "publish_datetime" => date("Y-m-d H:i:s"),
+	            "is_discontinue" => "0",
+	            "discontinue_datetime" => "0000-00-00 00:00:00"
+	        );
+	    }
+	    
+	    $request = $this->mod_product->product_add($data_insert);
+	    if ($request > 0){
+	        $message = "Success";
+	        $code = "200";
+	    } else {
+	        $message = "Failed";
+	        $code = "400";
+	    }
+	    $response = array(
+	        "message" => $message,
+	        "code" => $code,
+	        "data" => $request
+	    );
+	    echo json_encode($response,JSON_PRETTY_PRINT);
+	}
 
 	//--------------------------------------------------------PRODUCT--------------------------------------------------------
 	public function dealer_list(){
@@ -183,5 +222,44 @@ class Api extends CI_Controller {
 		echo json_encode($response,JSON_PRETTY_PRINT);
 	}
 
+	public function dealer_add_product(){
+	    if($this->input->post('id_dealer') == null &&
+	        $this->input->post('id_product') == null &&
+	        $this->input->post('price') == null){
+	        
+	        $data = file_get_contents('php://input');
+	        $json = json_decode($data);
+	        $data_insert = array(
+	            "id_dealer" => $json->id_dealer,
+	            "id_product" => $json->id_product,
+	            "price" => $json->price,
+	            "is_available" => "1",
+	            "publish_datetime" => date("Y-m-d H:i:s")
+	        );
+	    }else{
+	        $data_insert = array(
+	            "id_dealer" => $this->input->post('id_dealer'),
+	            "id_product" => $this->input->post('id_product'),
+	            "price" => $this->input->post('price'),
+	            "is_available" => "1",
+	            "publish_datetime" => date("Y-m-d H:i:s")
+	        );
+	    }
+	    
+	    $request = $this->mod_dealerproduct->dealer_add_product($data_insert);
+	    if ($request > 0){
+	       $message = "Success";
+	       $code = "200";
+	    } else {
+	       $message = "Failed";
+	       $code = "400";
+	    }
+	    $response = array(
+	        "message" => $message,
+	        "code" => $code,
+	        "data" => $request
+	    );
+	    echo json_encode($response,JSON_PRETTY_PRINT);
+	}
 
 }

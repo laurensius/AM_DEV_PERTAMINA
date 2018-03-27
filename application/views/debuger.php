@@ -22,8 +22,9 @@
         <div class="row">
           <form id="my_form" role="form" method="post" enctype="multipart/form-data">
             <div class="col-lg-12">
-                <input type="text" class="form-control" name="username">
-                <input type="text" class="form-control" name="password">
+                <input type="text" class="form-control" name="id_dealer">
+                <input type="text" class="form-control" name="id_produk">
+                <input type="text" class="form-control" name="price">
                 <br>
               <button type="submit" id="btn_simpan" value="simpan" class="btn btn-success">login</button>
             </div>
@@ -38,10 +39,10 @@
       $("form#my_form").submit(function(e) {
         var konfirmasi = confirm("Login?");
         if(konfirmasi){
-          e.preventDefault();    
+          e.preventDefault();
           var formData = new FormData(this);
           $.ajax({
-              url: "<?php echo site_url('/api/login/'); ?>",
+              url: "<?php echo site_url('/api/dealer_add_product/'); ?>",
               type: 'POST',
               data: formData,
               success: function(response) {

@@ -18,5 +18,10 @@ class Mod_product extends CI_Model {
         $query = $this->db->get();
         return $query->result();
     }
+    
+    function  product_add($data){
+        $this->db->insert('tbl_pertamina_product',$data);
+        return $this->db->affected_rows();
+    }
 
 }
