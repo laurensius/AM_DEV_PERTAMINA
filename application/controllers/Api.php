@@ -10,6 +10,8 @@ class Api extends CI_Controller {
 		$this->load->model('mod_product');
 		$this->load->model('mod_dealer');
 		$this->load->model('mod_dealerproduct');
+		
+		header('Content-type:json');
 	}
 
 	public function index(){
@@ -17,7 +19,7 @@ class Api extends CI_Controller {
 	}
 
 	//----------------------------------------------------------AUTENTIFIKASI---------------------------------------------------------
-	private function login(){
+	public function login(){
 		if($this->input->post('username') == null && $this->input->post('password') == null){
 			$data = file_get_contents('php://input');
 			$json = json_decode($data);
@@ -75,7 +77,6 @@ class Api extends CI_Controller {
 			"data_count" => $data_count,
 			"data" => $data
 		);
-		header('Content-type:json');
 		echo json_encode($response,JSON_PRETTY_PRINT);
 	}
 
@@ -176,7 +177,7 @@ class Api extends CI_Controller {
 	    echo json_encode($response,JSON_PRETTY_PRINT);
 	}
 
-	//--------------------------------------------------------PRODUCT--------------------------------------------------------
+	//--------------------------------------------------------DEALER--------------------------------------------------------
 	public function dealer_list(){
 		$request = $this->mod_dealer->dealer_list();
 		$response = array(
@@ -189,12 +190,18 @@ class Api extends CI_Controller {
 	}
 
 	public function dealer_detail(){
-		$request = $this->mod_dealer->dealer_detail($this->uri->segment(3));
+		$request_dealer = $this->mod_dealer->dealer_detail($this->uri->segment(3));
+		$request_product = $this->mod_dealerproduct->dealer_product_detail($this->uri->segment(3));
 		$response = array(
 			"message" => "Success",
 			"code" => "200",
-			"data_count" => sizeof($request),
-			"data" => $request
+			"data_count" => sizeof($request_dealer),
+			// "data" => $request_dealer,
+			// "product_list" => $request_product
+			"data" => array(
+				"dealer" => $request_dealer,
+				"product" =>$request_product,
+				"services" => array())
 		);
 		echo json_encode($response,JSON_PRETTY_PRINT);
 	}
