@@ -92,6 +92,102 @@ class Api extends CI_Controller {
 		echo json_encode($response,JSON_PRETTY_PRINT);
 	}
 
+	public function user_registration(){
+	    if ($this->input->post('username') == null &&
+	        $this->input->post('password') == null &&
+	        $this->input->post('user_full_name') == null &&
+	        $this->input->post('dob') == null &&
+	        $this->input->post('user_gender') == null &&
+	        $this->input->post('user_addr_street') == null &&
+	        $this->input->post('user_addr_kelurahan') == null &&
+	        $this->input->post('user_addr_kecamatan') == null &&
+	        $this->input->post('user_addr_kabupaten') == null &&
+	        $this->input->post('user_addr_provinsi') == null &&
+	        $this->input->post('email') == null &&
+	        $this->input->post('user_type') == null) {
+	            
+	        $data = file_get_contents('php://input');
+            $json = json_decode($data);
+            
+            $username = $json->username;
+            $password = $json->password;
+            $user_full_name = $json->user_full_name;
+            $dob = $json->dob;
+            $user_gender = $json->user_gender;
+            $user_addr_street = $json->user_addr_street;
+            $user_addr_kelurahan = $json->user_addr_kelurahan;
+            $user_addr_kecamatan = $json->user_addr_kecamatan;
+            $user_addr_kabupaten = $json->user_addr_kabupaten;
+            $user_addr_provinsi = $json->user_addr_provinsi;
+            $email = $json->email;
+            $user_type = $json->user_type;
+        } else {
+            $username = $this->input->post('username');
+            $password = $this->input->post('password');
+            $user_full_name = $this->input->post('user_full_name');
+            $dob = $this->input->post('dob');
+            $user_gender = $this->input->post('user_gender');
+            $user_addr_street = $this->input->post('user_addr_street');
+            $user_addr_kelurahan = $this->input->post('user_addr_kelurahan');
+            $user_addr_kecamatan = $this->input->post('user_addr_kecamatan');
+            $user_addr_kabupaten = $this->input->post('user_addr_kabupaten');
+            $user_addr_provinsi = $this->input->post('user_addr_provinsi');
+            $email = $this->input->post('email');
+            $user_type = $this->input->post('user_type');
+        }
+        
+        if($username != null && $password != null ){
+            $usernameChecker = $this->mod_user->is_registered($username);
+            if(sizeof($usernameChecker) > 0){
+                $severity = "warning";
+                $message = "Username already registered";
+                $data_count = sizeof($usernameChecker);
+                $data = $usernameChecker;
+            } else {
+                $data_insert = array(
+                    "username" => $username,
+                    "password" => md5($password),
+                    "user_full_name" => $user_full_name,
+                    "dob" => date($dob),
+                    "user_gender" => $user_gender,
+                    "user_addr_street" => $user_addr_street,
+                    "user_addr_kelurahan" => $user_addr_kelurahan,
+                    "user_addr_kecamatan" => $user_addr_kecamatan,
+                    "user_addr_kabupaten" => $user_addr_kabupaten,
+                    "user_addr_provinsi" => $user_addr_provinsi,
+                    "email" => $email,
+                    "user_type" => $user_type,
+                    "user_status" => "0",
+                    "datetime_register" => date("Y-m-d H:i:s")
+                );
+                
+                $request = $this->mod_user->user_registration($data_insert);
+                
+                if ($request > 0){
+                    $message = "Registration success";
+                    $severity = "success";
+                } else {
+                    $message = "Registration failed";
+                    $severity = "warning";
+                }
+                $data_count = $request;
+                $data = $data_insert;
+            }
+        } else{
+            $severity = "warning";
+            $message = "Tidak ada data dikirim ke server";
+            $data_count = "0";
+            $data = array();
+        }
+        $response = array(
+            "severity" => $severity,
+            "message" => $message,
+            "data_count" => $data_count,
+            "data" => $data
+        );
+        echo json_encode($response,JSON_PRETTY_PRINT);
+	}
+	
 	//--------------------------------------------------------ADDRESS--------------------------------------------------------
 	public function province_list(){
 		$request = $this->mod_addr->province_list();
@@ -172,7 +268,8 @@ class Api extends CI_Controller {
 	    $response = array(
 	        "message" => $message,
 	        "code" => $code,
-	        "data" => $request
+	        "data_count" => $request,
+	        "data" => $data_insert
 	    );
 	    echo json_encode($response,JSON_PRETTY_PRINT);
 	}
@@ -264,7 +361,8 @@ class Api extends CI_Controller {
 	    $response = array(
 	        "message" => $message,
 	        "code" => $code,
-	        "data" => $request
+	        "data_count" => $request,
+	        "data" => $data_insert
 	    );
 	    echo json_encode($response,JSON_PRETTY_PRINT);
 	}

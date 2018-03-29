@@ -19,8 +19,9 @@ class Mod_user extends CI_Model {
         return $query->result();
     }
 
-
-    
-
+    function  user_registration($data){
+        $this->db->insert('tbl_user',$data);
+        return $this->db->affected_rows();
+    }
 
 }
