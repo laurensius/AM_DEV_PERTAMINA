@@ -22,7 +22,7 @@ class Mod_dealerproduct extends CI_Model {
         return $query->result();
     }
     
-    function  dealer_add_product($data){
+    function dealer_add_product($data){
         $this->db->insert('tbl_dealer_product_list',$data);
         return $this->db->affected_rows();
     }

@@ -10,6 +10,7 @@ class Api extends CI_Controller {
 		$this->load->model('mod_product');
 		$this->load->model('mod_dealer');
 		$this->load->model('mod_dealerproduct');
+		$this->load->model('mod_dealerpromo');
 		
 		header('Content-type:json');
 	}
@@ -366,5 +367,31 @@ class Api extends CI_Controller {
 	    );
 	    echo json_encode($response,JSON_PRETTY_PRINT);
 	}
+
+	
+	//--------------------------------------------------------DEALER PROMO--------------------------------------------------------
+	public function dealer_promo_list(){
+		$request = $this->mod_dealerpromo->dealer_promo_list();
+		$response = array(
+			"message" => "Success",
+			"code" => "200",
+			"data_count" => sizeof($request),
+			"data" => $request
+		);
+		echo json_encode($response,JSON_PRETTY_PRINT);
+	}
+
+	public function dealer_promo_detail(){
+		$request = $this->mod_dealerpromo->dealer_promo_detail($this->uri->segment(3));
+		$response = array(
+			"message" => "Success",
+			"code" => "200",
+			"data_count" => sizeof($request),
+			"data" => $request
+		);
+		echo json_encode($response,JSON_PRETTY_PRINT);
+	}
+
+
 
 }
