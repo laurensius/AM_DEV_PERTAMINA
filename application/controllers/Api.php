@@ -290,15 +290,15 @@ class Api extends CI_Controller {
 	public function dealer_detail(){
 		$request_dealer = $this->mod_dealer->dealer_detail($this->uri->segment(3));
 		$request_product = $this->mod_dealerproduct->dealer_product_detail($this->uri->segment(3));
+		$request_promo = $this->mod_dealerpromo->dealer_promo_current($this->uri->segment(3));
 		$response = array(
 			"message" => "Success",
 			"code" => "200",
 			"data_count" => sizeof($request_dealer),
-			// "data" => $request_dealer,
-			// "product_list" => $request_product
 			"data" => array(
 				"dealer" => $request_dealer,
-				"product" =>$request_product,
+				"product" => $request_product,
+				"promo" => $request_promo,
 				"services" => array())
 		);
 		echo json_encode($response,JSON_PRETTY_PRINT);
@@ -383,6 +383,17 @@ class Api extends CI_Controller {
 
 	public function dealer_promo_detail(){
 		$request = $this->mod_dealerpromo->dealer_promo_detail($this->uri->segment(3));
+		$response = array(
+			"message" => "Success",
+			"code" => "200",
+			"data_count" => sizeof($request),
+			"data" => $request
+		);
+		echo json_encode($response,JSON_PRETTY_PRINT);
+	}
+
+	public function dealer_promo_current(){
+		$request = $this->mod_dealerpromo->dealer_promo_current($this->uri->segment(3));
 		$response = array(
 			"message" => "Success",
 			"code" => "200",
