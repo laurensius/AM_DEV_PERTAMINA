@@ -66,7 +66,7 @@ class Mod_user extends CI_Model {
     
     //activate account
     function confirm_email($key, $username){
-        $data = array('status' => 1);
+        $data = array('user_status' => 1);
         $condition = array('md5(email)' => key, 'username' => $username);
         $this->db->where($condition);
         return $this->db->update('tbl_user', $data);    //update status as 1 to make active user
