@@ -167,6 +167,8 @@ class Api extends CI_Controller {
                 if ($request > 0){
                     $message = "Registration success";
                     $severity = "success";
+                    // send email registration
+                    $this->mod_user->send_email($email, $username);
                 } else {
                     $message = "Registration failed";
                     $severity = "warning";
@@ -187,6 +189,22 @@ class Api extends CI_Controller {
             "data" => $data
         );
         echo json_encode($response,JSON_PRETTY_PRINT);
+	}
+	
+	public function confirm_email($hashcode, $username){
+	    if($this->mod_user->confirm_email($hashcode, $username)){
+	        $severity = "success";
+	        $message = "Email registered successfully.";
+	    } else {
+	        $severity = "warning";
+	        $message = "Email failed to be registered.";
+	    }
+	    redirect('api/login');
+	    $response = array(
+	        "severity" => $severity,
+	        "message" => $message
+	    );
+	    echo json_encode($response,JSON_PRETTY_PRINT);
 	}
 	
 	//--------------------------------------------------------ADDRESS--------------------------------------------------------
